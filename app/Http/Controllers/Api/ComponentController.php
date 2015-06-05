@@ -50,7 +50,7 @@ class ComponentController extends AbstractApiController
     /**
      * Create a new component.
      *
-     * @param \Illuminate\Contracts\Auth\Guard  $auth
+     * @param \Illuminate\Contracts\Auth\Guard $auth
      *
      * @return \CachetHQ\Cachet\Models\Component
      */
