@@ -12,6 +12,7 @@
 namespace CachetHQ\Cachet\Http\Controllers\Api;
 
 use CachetHQ\Cachet\Models\Incident;
+use Exception;
 use GrahamCampbell\Binput\Facades\Binput;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
@@ -27,9 +28,9 @@ class IncidentController extends AbstractApiController
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getIncidents(Request $request, Incident $incident)
+    public function getIncidents(Request $request)
     {
-        $incidents = $incident->paginate(Binput::get('per_page', 20));
+        $incidents = Incident::paginate(Binput::get('per_page', 20));
 
         return $this->paginator($incidents, $request);
     }
@@ -57,7 +58,12 @@ class IncidentController extends AbstractApiController
     {
         $incidentData = Binput::all();
         $incidentData['user_id'] = $auth->user()->id;
-        $incident = Incident::create($incidentData);
+
+        try {
+            $incident = Incident::create($incidentData);
+        } catch (Exception $e) {
+            throw new BadRequestHttpException();
+        }
 
         if ($incident->isValid()) {
             return $this->item($incident);

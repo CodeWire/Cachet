@@ -12,6 +12,7 @@
 namespace CachetHQ\Cachet\Http\Controllers\Api;
 
 use CachetHQ\Cachet\Models\MetricPoint;
+use Exception;
 use GrahamCampbell\Binput\Facades\Binput;
 
 class MetricPointController extends AbstractApiController
@@ -36,11 +37,16 @@ class MetricPointController extends AbstractApiController
      *
      * @return \CachetHQ\Cachet\Models\MetricPoint
      */
-    public function postMetricPoints(Metric $metric)
+    public function postMetricPoints()
     {
         $metricPointData = Binput::all();
         $metricPointData['metric_id'] = $metric->id;
-        $metricPoint = MetricPoint::create($metricPointData);
+
+        try {
+            $metricPoint = MetricPoint::create($metricPointData);
+        } catch (Exception $e) {
+            throw new BadRequestHttpException();
+        }
 
         return $this->item($metricPoint);
     }

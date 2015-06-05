@@ -12,6 +12,7 @@
 namespace CachetHQ\Cachet\Http\Controllers\Api;
 
 use CachetHQ\Cachet\Models\Metric;
+use Exception;
 use GrahamCampbell\Binput\Facades\Binput;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -22,13 +23,12 @@ class MetricController extends AbstractApiController
      * Get all metrics.
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \CachetHQ\Cachet\Models\Metric            $metric
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getMetrics(Request $request, Metric $metric)
+    public function getMetrics(Request $request)
     {
-        $metrics = $metric->paginate(Binput::get('per_page', 20));
+        $metrics = Metric::paginate(Binput::get('per_page', 20));
 
         return $this->paginator($metrics, $request);
     }
@@ -64,7 +64,11 @@ class MetricController extends AbstractApiController
      */
     public function postMetrics()
     {
-        $metric = Metric::create(Binput::all());
+        try {
+            $metric = Metric::create(Binput::all());
+        } catch (Exception $e) {
+            throw new BadRequestHttpException();
+        }
 
         if ($metric->isValid()) {
             return $this->item($metric);

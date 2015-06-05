@@ -13,6 +13,7 @@ namespace CachetHQ\Cachet\Http\Controllers\Api;
 
 use CachetHQ\Cachet\Models\Component;
 use CachetHQ\Cachet\Models\Tag;
+use Exception;
 use GrahamCampbell\Binput\Facades\Binput;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
@@ -24,13 +25,12 @@ class ComponentController extends AbstractApiController
      * Get all components.
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param \CachetHQ\Cachet\Models\Component         $component
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getComponents(Request $request, Component $component)
+    public function getComponents(Request $request)
     {
-        $components = $component->paginate(Binput::get('per_page', 20));
+        $components = Component::paginate(Binput::get('per_page', 20));
 
         return $this->paginator($components, $request);
     }
@@ -51,16 +51,19 @@ class ComponentController extends AbstractApiController
      * Create a new component.
      *
      * @param \Illuminate\Contracts\Auth\Guard  $auth
-     * @param \CachetHQ\Cachet\Models\Component $component
      *
      * @return \CachetHQ\Cachet\Models\Component
      */
-    public function postComponents(Guard $auth, Component $component)
+    public function postComponents(Guard $auth)
     {
         $componentData = Binput::except('tags');
         $componentData['user_id'] = $auth->user()->id;
 
-        $component = $component->create($componentData);
+        try {
+            $component = Component::create($componentData);
+        } catch (Exception $e) {
+            throw new BadRequestHttpException();
+        }
 
         if ($component->isValid()) {
             if (Binput::has('tags')) {
