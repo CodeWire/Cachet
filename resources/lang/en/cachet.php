@@ -69,6 +69,11 @@ return [
             'unsuscribe'  => 'Unsuscribe from email updates.',
             'unsuscribed' => 'Your email subscription has been cancelled,',
             'failure'     => 'Something went wrong with the subscription.',
+            'verify'      => [
+                'text'           => "Please confirm your email subscription to :app_name status updates.\n:link\nThank you, :app_name",
+                'html-preheader' => 'Please confirm your email subscription to :app_name status updates.',
+                'html'           => "<p>Please confirm your email subscription to :app_name status updates.</p><p>:link</p><p>Thank you, :app_name</p>",
+            ],
         ],
     ],
 

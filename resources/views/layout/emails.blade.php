@@ -125,11 +125,13 @@
                                 <tr>
                                     <td>
                                         <table border="0" width="100%" cellpadding="0" cellspacing="0" bgcolor="#ffffff">
+                                            @if($bannerImage = Setting::get('app_banner'))
                                             <tr>
-                                                <td bgcolor="#F0F3F4" style="padding: 40px; font-family: sans-serif; font-size: 20px; line-height: 27px; color: #666666; text-align: center;">
-                                                    <img src="{{ $message->embed('img/cachet-logo.svg') }}" width="300" alt="CachetHQ">
-                                                </td>
+                                               <td bgcolor="#F0F3F4" style="padding: 40px; font-family: sans-serif; font-size: 20px; line-height: 27px; color: #666666; text-align: center;">
+                                                   <a href="{{ $appUrl }}"><img src="data:{{ $bannerType }};base64, {{ $bannerImage}}" class="banner-image img-responsive"></a>
+                                               </td>
                                             </tr>
+                                            @endif
                                             <tr>
                                                 <td>
                                                     <!-- 2 x 2 grid : BEGIN -->
